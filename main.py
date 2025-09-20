@@ -1,6 +1,7 @@
 from config import *
 from sys import exit
 
+# Componentes da tela
 from game import Game
 from preview import Preview
 from score import Score
@@ -17,6 +18,7 @@ class Main:
         self.preview = Preview()
         self.score = Score()
 
+
     def run(self):
         while True:
             for event in pygame.event.get():
@@ -26,12 +28,15 @@ class Main:
 
             # Cor de fundo
             self.display_surface.fill(CINZA)
+
+            # Componentes
             self.game.run()
             self.preview.run()
             self.score.run()
 
             pygame.display.update()
             self.clock.tick()
+
 
 if __name__ == '__main__':
     main = Main()
