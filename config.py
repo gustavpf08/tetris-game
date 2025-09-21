@@ -16,6 +16,24 @@ PADDING = 20
 LARG_JANELA = LARGURA_JOGO + SIDEBAR_LARG + PADDING * 3
 ALT_JANELA = ALTURA_JOGO + PADDING * 2
 
+# Comportamento do jogo
+INICIO_BLOCO = pygame.Vector2(COLUNAS // 2 - 1, -1)
+
 # Cores
 CINZA = '#1C1C1C'
-WHITE = '#FFFFFF'
+BRANCO = '#FFFFFF'
+AZUL = '#204b9b'
+VERMELHO = '#FF0000'
+LILAS = '#C8A2C8'
+AMARELO = '#FFDE21' 
+VERDE = '#00FF00'
+
+FORMAS = {
+    'T': {'shape': [(0,0), (-1,0), (1,0), (0,-1)], 'color': AZUL}, 
+    'O': {'shape': [(0,0), (0,-1), (1,0), (1,-1)], 'color': BRANCO},
+    'S': {'shape': [(0,0), (0,-1), (1,-1), (1,-2)], 'color': VERMELHO},
+    'L': {'shape': [(0,0), (1,0), (0,-1), (0,-2)], 'color': VERMELHO},
+    'C': {'shape': [(0,0), (0,-1), (1,0), (2,0), (2,-1)], 'color': AMARELO},
+    'I': {'shape': [(0,0), (0,-1), (0,-2), (0,-3)], 'color': LILAS},
+    'E': {'shape': [(0,0), (0,-1), (1,0)], 'color': VERDE},
+}
