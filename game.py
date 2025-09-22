@@ -24,13 +24,16 @@ class Game:
 
         # Timer:
         self.timers = {
-            'movimento_vertical': Timer(VELOCIDADE_INICIO, True, self.move_para_baixo)
+            'movimento_vertical': Timer(VELOCIDADE_INICIO, True, self.move_para_baixo),
+        'movimento_horizontal': Timer(TEMPO_DE_MOVER)
         }
         self.timers['movimento_vertical'].ativar()
+
 
     def timer_update(self):
         for timer in self.timers.values():
             timer.update()
+
 
     def move_para_baixo(self):
         self.bloco_tetris.move_para_baixo()
@@ -48,7 +51,21 @@ class Game:
             pygame.draw.line(self.surface, BRANCO, (0, y), (self.surface.get_height(), y), 1)
  
 
+    def input(self):
+        chaves = pygame.key.get_pressed()
+        
+        if not self.timers['movimento_horizontal'].ativo:
+            if chaves[pygame.K_d]:
+                self.bloco_tetris.move_horizontal(1)
+                self.timers['movimento_horizontal'].ativar()
+
+            if chaves[pygame.K_a]:
+                self.bloco_tetris.move_horizontal(-1)
+                self.timers['movimento_horizontal'].ativar()
+
+
     def run(self):
+        self.input()
         self.timer_update()
         self.sprites.update()
         
@@ -73,6 +90,10 @@ class Formatos:
             block.pos.y += 1
 
 
+    def move_horizontal(self, qntd):
+        for block in self.blocks:
+            block.pos.x += qntd
+
 # Criando um sprite e colocando ele dentro de um grupo de sprites
 class Block(pygame.sprite.Sprite):
     def __init__(self, group, pos, color):
@@ -85,6 +106,7 @@ class Block(pygame.sprite.Sprite):
         x = self.pos.x * TAM_CELULA
         y = self.pos.y * TAM_CELULA
         self.rect = self.image.get_rect(topleft = (x, y))
+
 
     def update(self):
         x = self.pos.x * TAM_CELULA

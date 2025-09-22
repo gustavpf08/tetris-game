@@ -19,6 +19,7 @@ ALT_JANELA = ALTURA_JOGO + PADDING * 2
 # Comportamento do jogo
 VELOCIDADE_INICIO = 600
 INICIO_BLOCO = pygame.Vector2(COLUNAS // 2 - 1, -1)
+TEMPO_DE_MOVER = 200
 
 # Cores
 CINZA = '#1C1C1C'
