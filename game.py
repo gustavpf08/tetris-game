@@ -30,6 +30,7 @@ class Game:
         self.timers['movimento_vertical'].ativar()
 
 
+
     def timer_update(self):
         for timer in self.timers.values():
             timer.update()
@@ -86,13 +87,34 @@ class Formatos:
 
 
     def move_para_baixo(self):
-        for block in self.blocks:
-            block.pos.y += 1
+        if not self.prox_colisao_vertical_movi(self.blocks, 1):
+            for block in self.blocks:
+                block.pos.y += 1
 
 
     def move_horizontal(self, qntd):
-        for block in self.blocks:
-            block.pos.x += qntd
+        if not self.prox_colisao_horizontal_movi(self.blocks, qntd):
+            for block in self.blocks:
+                block.pos.x += qntd
+
+
+    # Colisões
+    def prox_colisao_horizontal_movi(self, blocks, qntd):
+        colisoes_horizontais = [block.colisao_horizontal(int(block.pos.x + qntd)) for block in self.blocks]
+
+        if True in colisoes_horizontais:
+            return True
+        else: 
+            return False
+
+    def prox_colisao_vertical_movi(self, blocks, qntd):
+        colisoes_verticais = [block.colisao_vertical(int(block.pos.y + qntd)) for block in self.blocks]
+
+        if True in colisoes_verticais:
+            return True
+        else:
+            return False
+    
 
 # Criando um sprite e colocando ele dentro de um grupo de sprites
 class Block(pygame.sprite.Sprite):
@@ -106,6 +128,16 @@ class Block(pygame.sprite.Sprite):
         x = self.pos.x * TAM_CELULA
         y = self.pos.y * TAM_CELULA
         self.rect = self.image.get_rect(topleft = (x, y))
+
+
+    def colisao_horizontal(self, x):
+        if not 0 <= x < COLUNAS:
+            return True
+
+
+    def colisao_vertical(self, y):
+        if y >= LINHAS:
+            return True
 
 
     def update(self):
