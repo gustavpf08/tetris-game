@@ -32,7 +32,9 @@ class Game:
 
     
     def criando_novo_bloco(self):
+        self.verifica_linhas_concluidas()
         self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada)
+
 
 
     def timer_update(self):
@@ -43,6 +45,28 @@ class Game:
     def move_para_baixo(self):
         self.bloco_tetris.move_para_baixo()
 
+
+    def verifica_linhas_concluidas(self):
+        linhas_deletadas = []
+        for i, linha in enumerate(self.area_ocupada):
+            if all(linha):
+                linhas_deletadas.append(i)
+
+        if linhas_deletadas:
+            for linha_del in linhas_deletadas:
+                for bloco in self.area_ocupada[linha_del]:
+                    bloco.kill()
+
+                for linha in self.area_ocupada:
+                    for bloco in linha:
+                        if bloco and bloco.pos.y < linha_del:
+                            bloco.pos.y += 1
+            
+            self.area_ocupada = [[0 for x in range(COLUNAS)] for y in range(LINHAS)]
+
+            for block in self.sprites:
+                self.area_ocupada[int(block.pos.y)][int(block.pos.x)] = block
+            
 
     def draw_grid(self):
         # Grid na Vertical
