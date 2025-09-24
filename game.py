@@ -20,7 +20,8 @@ class Game:
         self.surface.set_alpha(120)
         
         # Blocos do Tetris
-        self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites) 
+        self.area_ocupada = [[0 for x in range(COLUNAS)] for y in range(LINHAS)]
+        self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada) 
 
         # Timer:
         self.timers = {
@@ -29,6 +30,9 @@ class Game:
         }
         self.timers['movimento_vertical'].ativar()
 
+    
+    def criando_novo_bloco(self):
+        self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada)
 
 
     def timer_update(self):
@@ -79,9 +83,11 @@ class Game:
 
 
 class Formatos:
-    def __init__(self, forma, group):
+    def __init__(self, forma, group, criando_novo_bloco, area_ocupada):
         self.posicoes_bloco = FORMAS[forma]['shape'] 
         self.color = FORMAS[forma]['color'] 
+        self.criando_novo_bloco = criando_novo_bloco
+        self.area_ocupada = area_ocupada
 
         self.blocks = [Block(group, pos, self.color) for pos in self.posicoes_bloco]
 
@@ -90,6 +96,10 @@ class Formatos:
         if not self.prox_colisao_vertical_movi(self.blocks, 1):
             for block in self.blocks:
                 block.pos.y += 1
+        else:
+            for block in self.blocks:
+                self.area_ocupada[int(block.pos.y)][int(block.pos.x)] = block
+            self.criando_novo_bloco()
 
 
     def move_horizontal(self, qntd):
@@ -100,15 +110,16 @@ class Formatos:
 
     # Colisões
     def prox_colisao_horizontal_movi(self, blocks, qntd):
-        colisoes_horizontais = [block.colisao_horizontal(int(block.pos.x + qntd)) for block in self.blocks]
+        colisoes_horizontais = [block.colisao_horizontal(int(block.pos.x + qntd), self.area_ocupada) for block in self.blocks]
 
         if True in colisoes_horizontais:
             return True
         else: 
             return False
 
+    
     def prox_colisao_vertical_movi(self, blocks, qntd):
-        colisoes_verticais = [block.colisao_vertical(int(block.pos.y + qntd)) for block in self.blocks]
+        colisoes_verticais = [block.colisao_vertical(int(block.pos.y + qntd), self.area_ocupada) for block in self.blocks]
 
         if True in colisoes_verticais:
             return True
@@ -130,13 +141,20 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft = (x, y))
 
 
-    def colisao_horizontal(self, x):
+
+    def colisao_horizontal(self, x, area_ocupada):
         if not 0 <= x < COLUNAS:
             return True
 
+        if area_ocupada[int(self.pos.y)][x]:
+            return True
 
-    def colisao_vertical(self, y):
+
+    def colisao_vertical(self, y, area_ocupada):
         if y >= LINHAS:
+            return True
+        
+        if y >= 0 and area_ocupada[y][int(self.pos.x)]:
             return True
 
 
