@@ -26,15 +26,16 @@ class Game:
         # Timer:
         self.timers = {
             'movimento_vertical': Timer(VELOCIDADE_INICIO, True, self.move_para_baixo),
-        'movimento_horizontal': Timer(TEMPO_DE_MOVER)
+            'movimento_horizontal': Timer(TEMPO_DE_MOVER),
+            'rotacao': Timer(TEMPO_ROTACAO),
         }
         self.timers['movimento_vertical'].ativar()
 
     
+
     def criando_novo_bloco(self):
         self.verifica_linhas_concluidas()
         self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada)
-
 
 
     def timer_update(self):
@@ -83,6 +84,7 @@ class Game:
     def input(self):
         chaves = pygame.key.get_pressed()
         
+        # verifica movimento na horizontal
         if not self.timers['movimento_horizontal'].ativo:
             if chaves[pygame.K_d]:
                 self.bloco_tetris.move_horizontal(1)
@@ -91,6 +93,12 @@ class Game:
             if chaves[pygame.K_a]:
                 self.bloco_tetris.move_horizontal(-1)
                 self.timers['movimento_horizontal'].ativar()
+
+        # verifica rotação
+        if not self.timers['rotacao'].ativo:
+            if chaves[pygame.K_w]:
+                self.bloco_tetris.rotate()
+                self.timers['rotacao'].ativar()
 
 
     def run(self):
@@ -108,6 +116,7 @@ class Game:
 
 class Formatos:
     def __init__(self, forma, group, criando_novo_bloco, area_ocupada):
+        self.forma = forma
         self.posicoes_bloco = FORMAS[forma]['shape'] 
         self.color = FORMAS[forma]['color'] 
         self.criando_novo_bloco = criando_novo_bloco
@@ -150,6 +159,28 @@ class Formatos:
         else:
             return False
     
+    # rotate
+    def rotate(self):
+        if self.forma != 'O':
+            pos_centro = self.blocks[0].pos
+            nova_pos_bloco = [block.rotate(pos_centro) for block in self.blocks]
+
+            for pos in nova_pos_bloco:
+                # colisao na horizontal 
+                if pos.x < 0 or pos.x >= COLUNAS:
+                    return
+
+                # entre blocos
+                if self.area_ocupada[int(pos.y)][int(pos.x)]:
+                    return
+
+                # Vertical
+                if pos.y > LINHAS:
+                    return
+            
+            for i, block in enumerate(self.blocks):
+                block.pos = nova_pos_bloco[i]
+
 
 # Criando um sprite e colocando ele dentro de um grupo de sprites
 class Block(pygame.sprite.Sprite):
@@ -164,6 +195,9 @@ class Block(pygame.sprite.Sprite):
         y = self.pos.y * TAM_CELULA
         self.rect = self.image.get_rect(topleft = (x, y))
 
+
+    def rotate(self, pos_centro):
+        return pos_centro + (self.pos - pos_centro).rotate(90)  
 
 
     def colisao_horizontal(self, x, area_ocupada):
