@@ -6,6 +6,8 @@ from game import Game
 from preview import Preview
 from score import Score
 
+from random import choice
+
 class Main:
     def __init__(self):
         pygame.init()
@@ -13,11 +15,20 @@ class Main:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Tetris')
 
+        # Formatos
+        self.prox_formatos = [choice(list(FORMAS.keys())) for shape in range(3)]
+        print(self.prox_formatos)
+
         # Componentes
-        self.game = Game()
-        self.preview = Preview()
+        self.game = Game(self.pegando_prox_forma)
+        self.preview = Preview(self.prox_formatos)
         self.score = Score()
 
+
+    def pegando_prox_forma(self):
+        prox_forma = self.prox_formatos.pop(0)
+        self.prox_formatos.append(choice(list(FORMAS.keys())))
+        return prox_forma
 
     def run(self):
         while True:

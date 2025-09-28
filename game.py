@@ -4,10 +4,13 @@ import random
 from timer import Timer
 
 class Game:
-    def __init__(self):
+    def __init__(self, pegando_prox_forma):
         self.surface = pygame.Surface((LARGURA_JOGO, ALTURA_JOGO))
         self.display_surface = pygame.display.get_surface()
         self.rect = self.surface.get_rect(topleft = (PADDING, PADDING))
+
+        self.pegando_prox_forma = pegando_prox_forma
+        print(pegando_prox_forma)
 
         # Agrupando os blocos
         self.sprites = pygame.sprite.Group()
@@ -17,7 +20,7 @@ class Game:
         self.surface.set_colorkey((1, 0, 0))
 
         # Alterando a transparência do game
-        self.surface.set_alpha(120)
+        self.surface.set_alpha(250)
         
         # Blocos do Tetris
         self.area_ocupada = [[0 for x in range(COLUNAS)] for y in range(LINHAS)]
@@ -32,10 +35,9 @@ class Game:
         self.timers['movimento_vertical'].ativar()
 
     
-
     def criando_novo_bloco(self):
         self.verifica_linhas_concluidas()
-        self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada)
+        self.bloco_tetris = Formatos(self.pegando_prox_forma(), self.sprites, self.criando_novo_bloco, self.area_ocupada)
 
 
     def timer_update(self):

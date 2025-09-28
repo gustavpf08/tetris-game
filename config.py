@@ -22,21 +22,24 @@ INICIO_BLOCO = pygame.Vector2(COLUNAS // 2 - 1, -1)
 TEMPO_DE_MOVER = 200
 TEMPO_ROTACAO = 200
 
-# Cores
-CINZA = '#1C1C1C'
-BRANCO = '#FFFFFF'
+# Cores 
+AMARELO = '#f1e60d'
+VERMELHO = '#e51b20'
 AZUL = '#204b9b'
-VERMELHO = '#FF0000'
-LILAS = '#C8A2C8'
-AMARELO = '#FFDE21' 
-VERDE = '#00FF00'
+VERDE = '#65b32e'
+ROXO = '#7b217f'
+CIANO = '#6cc6d9'
+LARANJA = '#f07e13'
+CINZA= '#1C1C1C'
+BRANCO = '#FFFFFF'
 
+# Formas 
 FORMAS = {
-    'T': {'shape': [(0,0), (-1,0), (1,0), (0,-1)], 'color': AZUL}, 
-    'O': {'shape': [(0,0), (0,-1), (1,0), (1,-1)], 'color': BRANCO},
-    'S': {'shape': [(0,0), (0,-1), (1,-1), (1,-2)], 'color': VERMELHO},
-    'L': {'shape': [(0,0), (1,0), (0,-1), (0,-2)], 'color': VERMELHO},
-    'C': {'shape': [(0,0), (0,-1), (1,0), (2,0), (2,-1)], 'color': AMARELO},
-    'I': {'shape': [(0,0), (0,-1), (0,-2), (0,-3)], 'color': LILAS},
-    'E': {'shape': [(0,0), (0,-1), (1,0)], 'color': VERDE},
+	'T': {'shape': [(0,0), (-1,0), (1,0), (0,-1)], 'color': AMARELO},
+	'O': {'shape': [(0,0), (0,-1), (1,0), (1,-1)], 'color': VERMELHO},
+	'J': {'shape': [(0,0), (0,-1), (0,1), (-1,1)], 'color': AZUL},
+	'L': {'shape': [(0,0), (0,-1), (0,1), (1,1)], 'color': LARANJA},
+	'I': {'shape': [(0,0), (0,-1), (0,-2), (0,1)], 'color': CIANO},
+	'S': {'shape': [(0,0), (-1,0), (0,-1), (1,-1)], 'color': VERDE},
+	'Z': {'shape': [(0,0), (1,0), (0,-1), (-1,-1)], 'color': ROXO}
 }
