@@ -17,18 +17,25 @@ class Main:
 
         # Formatos
         self.prox_formatos = [choice(list(FORMAS.keys())) for shape in range(3)]
-        print(self.prox_formatos)
 
         # Componentes
-        self.game = Game(self.pegando_prox_forma)
+        self.game = Game(self.pegando_prox_forma, self.update_score)
         self.preview = Preview()
         self.score = Score()
+
+
+    def update_score(self, linhas, score, level):
+        self.score.linhas = linhas
+        self.score.score = score
+        self.score.level = level
+
 
 
     def pegando_prox_forma(self):
         prox_forma = self.prox_formatos.pop(0)
         self.prox_formatos.append(choice(list(FORMAS.keys())))
         return prox_forma
+
 
     def run(self):
         while True:

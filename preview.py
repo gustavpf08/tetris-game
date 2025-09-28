@@ -9,7 +9,7 @@ class Preview:
         self.rect = self.surface.get_rect(topright = (LARG_JANELA - PADDING, PADDING))
         
         # Formatos
-        self.superf_formato = {forma: load(path.join('.','assets','images',f'{forma}.png')).convert_alpha() for forma in FORMAS.keys()}
+        self.superf_formato = {forma: load(path.join('.','assets',f'{forma}.png')).convert_alpha() for forma in FORMAS.keys()}
 
         # Centralizando as imagens na tela
         self.incremento_altura = self.surface.get_height() / 3

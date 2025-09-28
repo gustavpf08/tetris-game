@@ -1,16 +1,17 @@
 from config import *
 import random
+from sys import exit
 
 from timer import Timer
 
 class Game:
-    def __init__(self, pegando_prox_forma):
+    def __init__(self, pegando_prox_forma, update_score):
         self.surface = pygame.Surface((LARGURA_JOGO, ALTURA_JOGO))
         self.display_surface = pygame.display.get_surface()
         self.rect = self.surface.get_rect(topleft = (PADDING, PADDING))
 
         self.pegando_prox_forma = pegando_prox_forma
-        print(pegando_prox_forma)
+        self.update_score = update_score
 
         # Agrupando os blocos
         self.sprites = pygame.sprite.Group()
@@ -20,22 +21,43 @@ class Game:
         self.surface.set_colorkey((1, 0, 0))
 
         # Alterando a transparência do game
-        self.surface.set_alpha(250)
+        self.surface.set_alpha(200)
         
         # Blocos do Tetris
         self.area_ocupada = [[0 for x in range(COLUNAS)] for y in range(LINHAS)]
         self.bloco_tetris = Formatos(random.choice(list(FORMAS.keys())), self.sprites, self.criando_novo_bloco, self.area_ocupada) 
 
         # Timer:
+        self.down_speed = VELOCIDADE_INICIO
+        self.down_speed_faster = self.down_speed * 0.3
+        self.down_pressionado = False
+
         self.timers = {
-            'movimento_vertical': Timer(VELOCIDADE_INICIO, True, self.move_para_baixo),
+            'movimento_vertical': Timer(self.down_speed, True, self.move_para_baixo),
             'movimento_horizontal': Timer(TEMPO_DE_MOVER),
             'rotacao': Timer(TEMPO_ROTACAO),
         }
         self.timers['movimento_vertical'].ativar()
 
+        # score
+        self.level_atual = 1
+        self.score_atual = 0
+        self.linhas_atuais = 0
+
+
+    def calculo_score(self, num_linhas):
+        self.linhas_atuais += num_linhas
+        self.score_atual += SCORE[num_linhas] * self.level_atual
+
+        if self.linhas_atuais / 10 > self.level_atual:
+            self.level_atual += 1
+
+        self.update_score(self.level_atual, self.score_atual, self.linhas_atuais)
+
+    
     
     def criando_novo_bloco(self):
+        self.verifica_game_over()
         self.verifica_linhas_concluidas()
         self.bloco_tetris = Formatos(self.pegando_prox_forma(), self.sprites, self.criando_novo_bloco, self.area_ocupada)
 
@@ -70,6 +92,9 @@ class Game:
             for block in self.sprites:
                 self.area_ocupada[int(block.pos.y)][int(block.pos.x)] = block
             
+            # Update score
+            self.calculo_score(len(linhas_deletadas))
+
 
     def draw_grid(self):
         # Grid na Vertical
@@ -101,6 +126,14 @@ class Game:
             if chaves[pygame.K_w]:
                 self.bloco_tetris.rotate()
                 self.timers['rotacao'].ativar()
+
+        if not self.down_pressionado and chaves[pygame.K_s]:
+            self.down_pressionado = True
+            self.timers['movimento_vertical'].duracao = self.down_speed_faster
+
+        if self.down_pressionado and not chaves[pygame.K_s]:
+            self.down_pressionado = False
+            self.timers['movimento_vertical'].duracao = self.down_speed
 
 
     def run(self):
