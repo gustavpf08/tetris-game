@@ -21,7 +21,7 @@ class Main:
 
         # Componentes
         self.game = Game(self.pegando_prox_forma)
-        self.preview = Preview(self.prox_formatos)
+        self.preview = Preview()
         self.score = Score()
 
 
@@ -42,7 +42,7 @@ class Main:
 
             # Componentes
             self.game.run()
-            self.preview.run()
+            self.preview.run(self.prox_formatos)
             self.score.run()
 
             pygame.display.update()
