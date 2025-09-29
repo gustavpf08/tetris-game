@@ -59,7 +59,7 @@ class Game:
             self.level_atual += 1
             self.down_speed *= 0.75
             self.down_speed_faster = self.down_speed * 0.3
-            self.timers['movimento_vertical'].duracao = self.down_speed
+            self.timers['movimento_vertical'].duracao = self.down
 
         self.update_score(self.level_atual, self.score_atual, self.linhas_atuais)
 
