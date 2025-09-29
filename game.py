@@ -1,6 +1,7 @@
 from config import *
 import random
 from sys import exit
+from os.path import join
 
 from timer import Timer
 
@@ -45,21 +46,36 @@ class Game:
         self.linhas_atuais = 0
 
 
+        # audio
+        self.som_batida = pygame.mixer.Sound(join('.', 'sounds', 'landing.wav'))
+        self.som_batida.set_volume(0.3)
+
+
     def calculo_score(self, num_linhas):
         self.linhas_atuais += num_linhas
         self.score_atual += SCORE[num_linhas] * self.level_atual
 
         if self.linhas_atuais / 10 > self.level_atual:
             self.level_atual += 1
+            self.down_speed *= 0.75
+            self.down_speed_faster = self.down_speed * 0.3
+            self.timers['movimento_vertical'].duracao = self.down_speed
 
         self.update_score(self.level_atual, self.score_atual, self.linhas_atuais)
 
     
+    def verifica_game_over(self):
+        for block in self.bloco_tetris.blocks:
+            if block.pos.y < 0:
+                exit()
+    
+
     
     def criando_novo_bloco(self):
         self.verifica_game_over()
         self.verifica_linhas_concluidas()
         self.bloco_tetris = Formatos(self.pegando_prox_forma(), self.sprites, self.criando_novo_bloco, self.area_ocupada)
+        self.som_batida.play()
 
 
     def timer_update(self):

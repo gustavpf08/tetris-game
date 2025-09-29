@@ -1,5 +1,6 @@
 from config import *
 from sys import exit
+from os.path import join
 
 # Componentes da tela
 from game import Game
@@ -23,12 +24,16 @@ class Main:
         self.preview = Preview()
         self.score = Score()
 
+        # audio
+        self.music = pygame.mixer.Sound(join('.', 'sounds', 'music.wav'))
+        self.music.set_volume(0.3)
+        self.music.play(-1)
+
 
     def update_score(self, linhas, score, level):
         self.score.linhas = linhas
         self.score.score = score
         self.score.level = level
-
 
 
     def pegando_prox_forma(self):
